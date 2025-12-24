@@ -980,3 +980,85 @@ public:
     }
 };
 
+
+// Hashing 3
+class HashChaining {
+    int BUCKETS;      // Current max size
+    int count;        // Current number of elements
+    list<int> *table; // Pointer to array of lists
+
+    // Helper: Rehash when Load Factor > 0.7
+    void rehash() {
+        int oldBuckets = BUCKETS;
+        list<int> *oldTable = table;
+
+        // 1. Double the size
+        BUCKETS = 2 * oldBuckets;
+        table = new list<int>[BUCKETS];
+        count = 0; // Reset count, insert() will increment it back
+
+        cout << "--- Rehashing: Table size increased from " << oldBuckets << " to " << BUCKETS << " ---" << nl;
+
+        // 2. Move old elements to new table
+        for (int i = 0; i < oldBuckets; i++) {
+            for (int key : oldTable[i]) {
+                insertItem(key); // Re-insert uses the NEW BUCKETS size
+            }
+        }
+
+        // 3. Free old memory
+        delete[] oldTable;
+    }
+
+public:
+    HashChaining(int size) {
+        BUCKETS = size;
+        count = 0;
+        table = new list<int>[BUCKETS];
+    }
+
+    ~HashChaining() {
+        delete[] table;
+    }
+
+    int hashFunction(int key) {
+        return key % BUCKETS;
+    }
+
+    void insertItem(int key) {
+        int index = hashFunction(key);
+        table[index].push_back(key);
+        count++;
+
+        // Check Load Factor (0.7 is standard threshold)
+        if ((double)count / BUCKETS >= 0.7) {
+            rehash();
+        }
+    }
+
+    void deleteItem(int key) {
+        int index = hashFunction(key);
+        list<int>::iterator i;
+        for (i = table[index].begin(); i != table[index].end(); i++) {
+            if (*i == key) {
+                table[index].erase(i);
+                count--; 
+                cout << "Deleted " << key << nl;
+                return;
+            }
+        }
+        cout << "Element " << key << " not found." << nl;
+    }
+
+    void displayHash() {
+        cout << "--- Hash Table (Size: " << BUCKETS << ", Elements: " << count << ") ---" << nl;
+        for (int i = 0; i < BUCKETS; i++) {
+            cout << i << " --> ";
+            for (auto x : table[i])
+                cout << x << " -> ";
+            cout << "NULL" << nl;
+        }
+    }
+};
+
+
