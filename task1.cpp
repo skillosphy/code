@@ -615,6 +615,48 @@ public:
         cout << nl;
     }
 
+    // has cycle
+
+bool hasCycle()
+    {
+        vector<bool> visited(gSize, false);
+        vector<bool> path(gSize, false); // Tracks nodes in current recursion stack
+
+        // Lambda function for DFS
+        function<bool(int)> dfs = [&](int u) -> bool {
+            visited[u] = true;
+            path[u] = true;
+
+            for (auto &edge : graph[u])
+            {
+                int v = edge.first;
+                if (!visited[v])
+                {
+                    if (dfs(v)) return true;
+                }
+                else if (path[v])
+                {
+                    // If visited and currently in the active path, it's a cycle
+                    return true;
+                }
+            }
+
+            path[u] = false; // Backtrack
+            return false;
+        };
+
+        // Iterate over all nodes to handle disconnected graphs
+        for (int i = 0; i < gSize; i++)
+        {
+            if (!visited[i] && dfs(i))
+                return true;
+        }
+
+        return false;
+    }
+
+//
+
     // --- Dijkstra's Algorithm ---
     void dijkstra(int startNode)
     {
@@ -937,3 +979,4 @@ public:
             cout << i << " -> " << table[i] << nl;
     }
 };
+
