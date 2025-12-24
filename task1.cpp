@@ -884,3 +884,56 @@ void printArray(int A[], int size)
     }
     cout << nl;
 }
+
+// Hashing 2
+
+class HashOpen
+{
+    vector<int> table;
+    int size;
+    const int EMPTY = -1;
+    const int DELETED = -2;
+
+public:
+    HashOpen(int s)
+    {
+        size = s;
+        table.assign(size, EMPTY);
+    }
+
+    int hash(int key) { return key % size; }
+
+    void insertLinear(int key)
+    {
+        int h = hash(key);
+        for (int i = 0; i < size; i++)
+        {
+            int idx = (h + i) % size;
+            if (table[idx] == EMPTY || table[idx] == DELETED)
+            {
+                table[idx] = key;
+                return;
+            }
+        }
+    }
+
+    void insertQuadratic(int key)
+    {
+        int h = hash(key);
+        for (int i = 0; i < size; i++)
+        {
+            int idx = (h + i * i) % size;
+            if (table[idx] == EMPTY || table[idx] == DELETED)
+            {
+                table[idx] = key;
+                return;
+            }
+        }
+    }
+
+    void display()
+    {
+        for (int i = 0; i < size; i++)
+            cout << i << " -> " << table[i] << nl;
+    }
+};
