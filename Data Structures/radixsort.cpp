@@ -78,10 +78,9 @@ public:
         }
         cout << nl;
     }
-}
+};
 
-int
-main()
+int main()
 {
     solve();
     cout << "Execution Time: " << double(clock() - s) / CLOCKS_PER_SEC << " seconds" << endl;
